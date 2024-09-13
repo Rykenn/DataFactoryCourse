@@ -1,0 +1,17 @@
+{
+	"name": "08-COPYDataParquet",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE PoolActivityLog\n(\n    [Correlationid] VARCHAR(200),\n    [Operationname] VARCHAR(300),\n    [Status] VARCHAR(100),\n    [Eventcategory] VARCHAR(100),\n    [Level] VARCHAR(100),\n    [Time] VARCHAR(100),\n    [Subscription] VARCHAR(200),\n    [Eveninitiatedby] VARCHAR(1000),\n    [Resourcetype] VARCHAR(300),\n    [Resourcegroup] VARCHAR(1000),\n    [Resource] VARCHAR(2000)\n)\nWITH \n(\n    DISTRIBUTION=ROUND_ROBIN\n)\n\nCOPY INTO PoolActivityLog\nFROM 'https://datalake4synapse.blob.core.windows.net/data/ActivityLog-01.parquet'\nWITH(\n    FILE_TYPE='PARQUET',\n    CREDENTIAL=\n    (\n        IDENTITY='Shared Access Signature',\n        SECRET='sv=2022-11-02&ss=b&srt=sco&sp=rlx&se=2024-07-26T21:41:21Z&st=2024-07-04T13:41:21Z&spr=https&sig=0PL4Qm%2BTbWnmVD1sOXpnObi%2FBK7OqBeMNBANy3TZDLQ%3D'\n    )\n)\n\nSELECT COUNT(*) FROM PoolActivityLog",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

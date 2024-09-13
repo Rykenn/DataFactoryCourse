@@ -1,0 +1,17 @@
+{
+	"name": "12-DataFactoryCSV",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE PoolActivityLog\n(\n    [Correlationid] VARCHAR(200),\n    [Operationname] VARCHAR(300),\n    [Status] VARCHAR(100),\n    [Eventcategory] VARCHAR(100),\n    [Level] VARCHAR(100),\n    [Time] datetime,\n    [Subscription] VARCHAR(200),\n    [Eventinitiatedby] VARCHAR(1000),\n    [Resourcetype] VARCHAR(300),\n    [Resourcegroup] VARCHAR(1000),\n    [Resource] VARCHAR(2000)\n)\nWITH \n(\n    DISTRIBUTION=HASH(Operationname)\n)\n\nSELECT * FROM PoolActivityLog",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

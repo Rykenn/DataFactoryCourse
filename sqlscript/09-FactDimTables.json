@@ -1,0 +1,17 @@
+{
+	"name": "09-FactDimTables",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE factSales\n(\n    SalesOrderID int NOT NULL,\n    OrderDate datetime NOT NULL,\n    CustomerID int NOT NULL,\n    SubTotal money NOT NULL,\n    TaxAmt money NOT NULL,\n    Freight money NOT NULL,\n    TotalDue money NOT NULL,\n    OrderQty int,\n    ProductID int NOT NULL,\n    UnitPrice money NOT NULL,\n    UnitPriceDiscount money NOT NULL,\n    LineTotal decimal NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=HASH(ProductID)\n)\n\nCREATE TABLE dimProduct\n(\n    ProductSK INT Identity(1,1) NOT NULL,\n    ProductID int NOT NULL,\n    ProductNumber varchar(100) NOT NULL,\n    Color varchar(20) NOT NULL,\n    ProductCategoryID int NOT NULL,\n    ProductCategoryName varchar(200) NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=REPLICATE\n)\n\nCREATE TABLE dimCustomer\n(\n    CustomerID int NOT NULL,\n    CompanyName varchar(500) NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=REPLICATE\n)\n\nSELECT ProductID, COUNT(SalesOrderID) AS 'Count of Sales Orders' FROM factSales\nGROUP BY ProductID\nORDER BY ProductID\n\nSELECT fs.ProductID, COUNT(dp.Color) AS 'Color Count'\nFROM factSales fs JOIN dimProduct dp \nON fs.ProductID = dp.ProductID\nGROUP BY fs.ProductID\n\nSELECT * FROM dimProduct\nORDER BY ProductSK",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

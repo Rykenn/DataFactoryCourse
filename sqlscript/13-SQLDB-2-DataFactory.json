@@ -1,0 +1,17 @@
+{
+	"name": "13-SQLDB-2-DataFactory",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE factSales\n(\n    SalesOrderID int NOT NULL,\n    OrderDate datetime NOT NULL,\n    CustomerID int NOT NULL,\n    SubTotal money NOT NULL,\n    TaxAmt money NOT NULL,\n    Freight money NOT NULL,\n    TotalDue money NOT NULL,\n    OrderQty int,\n    ProductID int NOT NULL,\n    UnitPrice money NOT NULL,\n    UnitPriceDiscount money NOT NULL,\n    LineTotal decimal NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=HASH(ProductID)\n)\n\nSELECT * FROM factSales\n\nDELETE FROM factSales\nDELETE FROM dimCustomer\n\nCREATE TABLE dimCustomer\n(\n    CustomerSK int NOT NULL,\n    CustomerID int NOT NULL,\n    CompanyName varchar(500) NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=REPLICATE\n)\n\nDROP TABLE dimCustomer\n\nSELECT MAX(CustomerSK) FROM dimCustomer\n\nSELECT MAX(CustomerSK) AS 'MaxCustomerSK' FROM dbo.dimCustomer\n\nSELECT * FROM dimCustomer\n\nCREATE TABLE dimProduct\n(\n    ProductSK int NOT NULL,\n    ProductID int NOT NULL,\n    ProductNumber varchar(100) NOT NULL,\n    Color varchar(20) NOT NULL,\n    ProductCategoryID int NOT NULL,\n    ProductCategoryName varchar(200) NOT NULL\n)\nWITH\n(\n    DISTRIBUTION=REPLICATE\n)\n\nSELECT * FROM dimProduct\n\nDROP TABLE dimProduct\n\nSELECT COUNT(*) FROM factSales\nSELECT COUNT(*) FROM dimCustomer\nSELECT COUNT(*) FROM dimProduct\n\nCREATE MASTER KEY ENCRYPTION BY PASSWORD = 'P@ssword@123'\n\nCREATE PROCEDURE ClearTables\nAS \n    DELETE FROM factSales;\n    DELETE FROM dimCustomer;\n    DELETE FROM dimProduct;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

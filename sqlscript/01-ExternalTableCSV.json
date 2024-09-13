@@ -1,0 +1,17 @@
+{
+	"name": "01-ExternalTableCSV",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL DATA SOURCE srcActivityLog\nWITH(\n    LOCATION='https://datalake4synapse.blob.core.windows.net/data'\n)\n\nCREATE EXTERNAL FILE FORMAT delimitedTextFileFormat\nWITH(\n    FORMAT_TYPE=DELIMITEDTEXT,\n    FORMAT_OPTIONS(\n        FIELD_TERMINATOR=',',\n        FIRST_ROW=2\n    )\n)\n\nCREATE EXTERNAL TABLE ActivityLog\n(\n    [Correlationid] VARCHAR(200),\n    [Operationname] VARCHAR(300),\n    [Status] VARCHAR(100),\n    [Eventcategory] VARCHAR(100),\n    [Level] VARCHAR(100),\n    [Time] VARCHAR(100),\n    [Subscription] VARCHAR(200),\n    [Eveninitiatedby] VARCHAR(1000),\n    [Resourcetype] VARCHAR(300),\n    [Resourcegroup] VARCHAR(1000),\n    [Resource] VARCHAR(2000)\n)\nWITH \n(\n    LOCATION='/ActivityLog-01.csv',\n    DATA_SOURCE=srcActivityLog,\n    FILE_FORMAT=delimitedTextFileFormat\n)\n\nSELECT * FROM ActivityLog\n\nSELECT COUNT(Operationname) AS 'Count of Operations',\n       Status\nFROM ActivityLog\nGROUP BY Status",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "appdb",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

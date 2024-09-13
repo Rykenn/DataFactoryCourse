@@ -1,0 +1,17 @@
+{
+	"name": "15-ConditionalSplit",
+	"properties": {
+		"content": {
+			"query": "SELECT * FROM PoolActivityLog;\n\nSELECT Resourcegroup, COUNT(Operationname) FROM PoolActivityLog\nGROUP BY Resourcegroup;\n\nDELETE FROM PoolActivityLog\n\nSELECT * FROM dimCustomer;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

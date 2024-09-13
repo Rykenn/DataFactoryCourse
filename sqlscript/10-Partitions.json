@@ -1,0 +1,17 @@
+{
+	"name": "10-Partitions",
+	"properties": {
+		"content": {
+			"query": "DROP TABLE PoolActivityLog\n\nCREATE TABLE PoolActivityLog\n(\n    [Correlationid] VARCHAR(200),\n    [Operationname] VARCHAR(300),\n    [Status] VARCHAR(100),\n    [Eventcategory] VARCHAR(100),\n    [Level] VARCHAR(100),\n    [Time] DATETIME,\n    [Subscription] VARCHAR(200),\n    [Eveninitiatedby] VARCHAR(1000),\n    [Resourcetype] VARCHAR(300),\n    [Resourcegroup] VARCHAR(1000),\n    [Resource] VARCHAR(2000)\n)\nWITH\n(\n    DISTRIBUTION=HASH(Operationname),\n    PARTITION (\n        Time RANGE RIGHT FOR VALUES\n        ('2024-04-01', '2024-05-01')\n    )\n)\n\nCREATE TABLE PoolActivityLog_new\n(\n    [Correlationid] VARCHAR(200),\n    [Operationname] VARCHAR(300),\n    [Status] VARCHAR(100),\n    [Eventcategory] VARCHAR(100),\n    [Level] VARCHAR(100),\n    [Time] DATETIME,\n    [Subscription] VARCHAR(200),\n    [Eveninitiatedby] VARCHAR(1000),\n    [Resourcetype] VARCHAR(300),\n    [Resourcegroup] VARCHAR(1000),\n    [Resource] VARCHAR(2000)\n)\nWITH\n(\n    DISTRIBUTION=HASH(Operationname),\n    PARTITION (\n        Time RANGE RIGHT FOR VALUES\n        ('2024-05-01')\n    )\n)\n\nALTER TABLE PoolActivityLog SWITCH PARTITION 2 TO PoolActivityLog_new PARTITION 1\n\nSELECT * FROM PoolActivityLog\n\nSELECT FORMAT(Time,'yyyy-MM-dd') AS 'Operation dateTime', COUNT([Operationname]) AS 'Numer of Operations'\nFROM PoolActivityLog_new\nGROUP BY FORMAT(Time, 'yyyy-MM-dd')\nORDER BY 'Operation dateTime'",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "datapool",
+				"poolName": "datapool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
